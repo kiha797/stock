@@ -1,2 +1,19 @@
-# stock
-대한민국 국내 해외 시황 및 전문가 추천 포트폴리오
+# KNEE Invest
+국내·미국 시황, MACD(20,60,9) 조건 검색, 개인 자산 관리, 투자 전문가 분기 공시를 모은 투자 관제실입니다.
+
+**이 저장소는 운영 소스 업로드 단계입니다.** 사용자 Cloudflare 계정으로의 배포, 데이터 이전, `stock.labelpos.com` 연결은 아직 완료되지 않았습니다. 다음 단계는 [DEPLOYMENT.md](./DEPLOYMENT.md)를 확인하세요. 아래 기존 운영 안내는 Sites에서 실행 중인 원본 환경에 적용됩니다.
+
+## Advertising placements
+`app/ad-slot.tsx` reserves three clearly labeled, non-clickable ad areas: dashboard below the overview, market right column (desktop only above 1250px), and expert analysis before the holdings panel. At most two areas appear in one view. Portfolio, watchlist, settings, and dialogs have no ad slots. `app/ads.css` keeps ads in normal flow with reserved height and spacing; no sticky, overlay, or popup ads are used.
+
+These are placeholders only, with no AdSense script, publisher ID, ad requests, or tracking. To activate after domain/site approval, replace the inner placeholder with the publisher's official ad-unit code using real client/slot IDs. Load the script once, handle SPA mounts and visible widths, skip the hidden desktop unit on mobile, and verify responsive sizing and unfilled slots. Do not treat adding these areas as AdSense approval. Recheck Google placement guidance: https://support.google.com/adsense/answer/1346295 .
+
+Private owner-only investment workspace. Do not change audience without adding identity-scoped storage.
+
+## Morning update
+Use the Sites get_site tool for this exact Site to retrieve current_live_url and siwc_bypass_bearer_token. Never log the token. Use the token only in the OAI-Sites-Authorization Bearer header to this Site. POST /api/refresh with no body. This endpoint reads Yahoo Finance adjusted daily closing prices, excludes incomplete sessions, analyzes EMA20 - EMA60 and EMA9 signal, and persists a snapshot and 60-day daily report history in D1. It covers 32 default securities plus saved holdings/watchlist, maximum 80 including indices. Read GET /api/data with the same authorization to confirm updated snapshot and report. No visitor or external connected app identity is required; relies on owner-private Sites dispatch access. Source is public Yahoo Finance; not a licensed all-market feed. On upstream failure the endpoint preserves last snapshot and returns explicit failure. Never fabricate prices or retry aggressively. A partial successful update exposes excluded symbols. Portfolio is manually entered, not a brokerage sync.
+
+## Expert portfolio research
+Main page has AI-illustrated manager cards. `/api/research` GET is a self-describing runtime read/write contract for unattended research. It returns current `research` and `writeContract`; cloud tasks do not need access to this checkout. Using the existing Site service access described above, search SEC filings for Berkshire CIK 1067983, ARK CIK 1697748, Pershing Square Inc CIK 2026053 (historical Capital Management 1336528), plus official ARK daily fund disclosures and official manager publications. Source access via web search has been verified independently of Site access. Read the original information tables for numerical updates; normalize report value units to USD. Aggregate CUSIP+class+option, keep options distinct, use complete reports for additions/removals. Daily ETF scope must never overwrite manager quarterly 13F. Different CIKs are not directly compared. Incoming payload is validated for totals, weights, dates and duplicate positions. POST `/api/research` with expectedUpdatedAt from GET; append/update reports only when changed, source-linked updates and a source-check result. Existing quarters are preserved. Then GET to confirm the write. On source errors preserve data and save a partial/error check. Do not redeploy to refresh research. Bearer credentials belong only in request headers to this Site, never source, logs, or schedule text. Preserve the current Site audience; all research records are shared within the existing access boundary.
+
+Initial coverage: complete SEC information tables for 2026 Q1/Q2 of the three reporting groups. Quarter end, filing date, reporting entity and original document links are shown separately. Latest-quarter discovery runs in the morning schedule. Portraits were generated with built-in imagegen as editorial AI illustrations and are labeled in the UI, not affiliation or endorsement.
