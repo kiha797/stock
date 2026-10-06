@@ -4,5 +4,5 @@
   "main": "build/cloudflare-worker.ts",
   "compatibility_date": "2026-05-15",
   "compatibility_flags": ["nodejs_compat"],
-  "d1_databases": [{"binding":"DB","database_name":"stock-db","database_id":"00000000-0000-4000-8000-000000000000","migrations_dir":"drizzle"}]
+  "d1_databases": [{"binding":"DB","database_name":"stock-db","database_id":"fcf238a9-9c9a-47bb-8df9-5d05e74187df","migrations_dir":"drizzle"}]
 }
