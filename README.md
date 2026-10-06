@@ -1,7 +1,7 @@
 # KNEE Invest
 국내·미국 시황, MACD(20,60,9) 조건 검색, 개인 자산 관리, 투자 전문가 분기 공시를 모은 투자 관제실입니다.
 
-**이 저장소는 운영 소스 업로드 단계입니다.** 사용자 Cloudflare 계정으로의 배포, 데이터 이전, `stock.labelpos.com` 연결은 아직 완료되지 않았습니다. 다음 단계는 [DEPLOYMENT.md](./DEPLOYMENT.md)를 확인하세요. 아래 기존 운영 안내는 Sites에서 실행 중인 원본 환경에 적용됩니다.
+**Cloudflare 배포 설정과 관리자 로그인 구현을 포함합니다.** 실제 계정의 D1 연결, 배포, 데이터 이전, `stock.labelpos.com` 연결은 아직 완료되지 않았습니다. [배포 절차](./CLOUDFLARE.md)를 따라 설정하세요. 아래 기존 운영 안내는 Sites에서 실행 중인 원본 환경에만 적용됩니다.
 
 ## Advertising placements
 `app/ad-slot.tsx` reserves three clearly labeled, non-clickable ad areas: dashboard below the overview, market right column (desktop only above 1250px), and expert analysis before the holdings panel. At most two areas appear in one view. Portfolio, watchlist, settings, and dialogs have no ad slots. `app/ads.css` keeps ads in normal flow with reserved height and spacing; no sticky, overlay, or popup ads are used.
