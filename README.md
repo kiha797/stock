@@ -1,19 +1,17 @@
-# KNEE Invest
-국내·미국 시황, MACD(20,60,9) 조건 검색, 개인 자산 관리, 투자 전문가 분기 공시를 모은 투자 관제실입니다.
+# KNEE · 공개 투자 관제실
 
-**Cloudflare 배포 설정과 관리자 로그인 구현을 포함합니다.** 실제 계정의 D1 연결, 배포, 데이터 이전, `stock.labelpos.com` 연결은 아직 완료되지 않았습니다. [배포 절차](./CLOUDFLARE.md)를 따라 설정하세요. 아래 기존 운영 안내는 Sites에서 실행 중인 원본 환경에만 적용됩니다.
+국내·미국 시황, MACD(20,60,9) 조건 검색, 전문가 분기 공시를 로그인 없이 확인합니다.
 
-## Advertising placements
-`app/ad-slot.tsx` reserves three clearly labeled, non-clickable ad areas: dashboard below the overview, market right column (desktop only above 1250px), and expert analysis before the holdings panel. At most two areas appear in one view. Portfolio, watchlist, settings, and dialogs have no ad slots. `app/ads.css` keeps ads in normal flow with reserved height and spacing; no sticky, overlay, or popup ads are used.
+- 보유자산과 관리자 로그인 화면은 제거했습니다.
+- 관심종목과 무릎 기준은 방문자 브라우저에만 저장합니다.
+- 기본 32종목과 지수·환율을 분석하며 관심종목 추가는 수집 범위를 바꾸지 않습니다.
+- 매일 한국 오전 8시 Cloudflare Cron으로 시세를 수집합니다. 최초 접속이나 26시간 이상 지난 데이터 조회도 백그라운드 수집을 시작합니다. 10분 잠금으로 중복 수집을 제한합니다.
+- 확정 일봉을 사용합니다. 전체 실패 시 이전 시세를 유지하고 일부 실패 종목은 후보에서 제외합니다.
+- 공개 API는 개인 기록을 반환하지 않습니다. 기존 개인 기록은 삭제하지 않습니다.
 
-These are placeholders only, with no AdSense script, publisher ID, ad requests, or tracking. To activate after domain/site approval, replace the inner placeholder with the publisher's official ad-unit code using real client/slot IDs. Load the script once, handle SPA mounts and visible widths, skip the hidden desktop unit on mobile, and verify responsive sizing and unfilled slots. Do not treat adding these areas as AdSense approval. Recheck Google placement guidance: https://support.google.com/adsense/answer/1346295 .
+## 전문가 자료와 광고
+초기 SEC 공개 자료를 제공합니다. 전문가 연구 자동화는 기존 Sites를 대상으로 하며 새 도메인으로 별도 연결해야 합니다. 시세 Cron은 전문가 연구를 수행하지 않습니다.
 
-Private owner-only investment workspace. Do not change audience without adding identity-scoped storage.
+광고 영역은 자리표시자이며 AdSense 게시자 ID와 광고 단위는 아직 연결하지 않았습니다.
 
-## Morning update
-Use the Sites get_site tool for this exact Site to retrieve current_live_url and siwc_bypass_bearer_token. Never log the token. Use the token only in the OAI-Sites-Authorization Bearer header to this Site. POST /api/refresh with no body. This endpoint reads Yahoo Finance adjusted daily closing prices, excludes incomplete sessions, analyzes EMA20 - EMA60 and EMA9 signal, and persists a snapshot and 60-day daily report history in D1. It covers 32 default securities plus saved holdings/watchlist, maximum 80 including indices. Read GET /api/data with the same authorization to confirm updated snapshot and report. No visitor or external connected app identity is required; relies on owner-private Sites dispatch access. Source is public Yahoo Finance; not a licensed all-market feed. On upstream failure the endpoint preserves last snapshot and returns explicit failure. Never fabricate prices or retry aggressively. A partial successful update exposes excluded symbols. Portfolio is manually entered, not a brokerage sync.
-
-## Expert portfolio research
-Main page has AI-illustrated manager cards. `/api/research` GET is a self-describing runtime read/write contract for unattended research. It returns current `research` and `writeContract`; cloud tasks do not need access to this checkout. Using the existing Site service access described above, search SEC filings for Berkshire CIK 1067983, ARK CIK 1697748, Pershing Square Inc CIK 2026053 (historical Capital Management 1336528), plus official ARK daily fund disclosures and official manager publications. Source access via web search has been verified independently of Site access. Read the original information tables for numerical updates; normalize report value units to USD. Aggregate CUSIP+class+option, keep options distinct, use complete reports for additions/removals. Daily ETF scope must never overwrite manager quarterly 13F. Different CIKs are not directly compared. Incoming payload is validated for totals, weights, dates and duplicate positions. POST `/api/research` with expectedUpdatedAt from GET; append/update reports only when changed, source-linked updates and a source-check result. Existing quarters are preserved. Then GET to confirm the write. On source errors preserve data and save a partial/error check. Do not redeploy to refresh research. Bearer credentials belong only in request headers to this Site, never source, logs, or schedule text. Preserve the current Site audience; all research records are shared within the existing access boundary.
-
-Initial coverage: complete SEC information tables for 2026 Q1/Q2 of the three reporting groups. Quarter end, filing date, reporting entity and original document links are shown separately. Latest-quarter discovery runs in the morning schedule. Portraits were generated with built-in imagegen as editorial AI illustrations and are labeled in the UI, not affiliation or endorsement.
+배포 방법은 [CLOUDFLARE.md](./CLOUDFLARE.md)를 참고하세요.
