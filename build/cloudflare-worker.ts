@@ -1,5 +1,6 @@
 import handler from 'vinext/server/fetch-handler';
 import {refreshPublicMarket} from '../lib/public-market';
+import {refreshPublicResearch} from '../lib/public-research';
 import {canUpdate} from '../lib/server-auth';
 type Env=Cloudflare.Env & {RESEARCH_UPDATE_TOKEN?:string;OWNER_PASSWORD?:string};
 export default {
@@ -19,5 +20,5 @@ export default {
     }
     return handler.fetch(request,env,ctx);
   },
-  async scheduled(_event:ScheduledController,_env:Env,ctx:ExecutionContext){ctx.waitUntil(refreshPublicMarket(true).then(()=>{}));},
+  async scheduled(_event:ScheduledController,_env:Env,ctx:ExecutionContext){ctx.waitUntil(Promise.allSettled([refreshPublicMarket(true),refreshPublicResearch()]).then(()=>{}));},
 };
