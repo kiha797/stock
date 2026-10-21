@@ -20,5 +20,5 @@ export default {
     }
     return handler.fetch(request,env,ctx);
   },
-  async scheduled(_event:ScheduledController,_env:Env,ctx:ExecutionContext){ctx.waitUntil(Promise.allSettled([refreshPublicMarket(true),refreshPublicResearch()]).then(()=>{}));},
+  async scheduled(event:ScheduledController,_env:Env,ctx:ExecutionContext){const jobs=[refreshPublicResearch()];if(event.cron==='0 23 * * *')jobs.push(refreshPublicMarket(true));ctx.waitUntil(Promise.allSettled(jobs).then(()=>{}));},
 };
