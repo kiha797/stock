@@ -16,7 +16,7 @@ export async function refreshPublicResearch(){
   if(!lock.meta.changes)return {...old,syncStatus:status};
   const checkedAt=new Date().toISOString();
   try{
-    const response=await fetch(RESEARCH_SOURCE,{headers:{Accept:'application/json'},cache:'no-store',redirect:'error',signal:AbortSignal.timeout(25000)});
+    const response=await fetch(RESEARCH_SOURCE,{headers:{Accept:'application/json'},cache:'no-store',redirect:'manual',signal:AbortSignal.timeout(25000)});
     if(!response.ok)throw Error(`Research source returned ${response.status}`);
     const body=await response.text();
     if(body.length>2000000)throw Error('Research source too large');
