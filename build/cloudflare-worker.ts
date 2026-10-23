@@ -9,9 +9,9 @@ export default {
     try{path=decodeURIComponent(new URL(request.url).pathname).replace(/\/{2,}/g,'/').replace(/\/$/,'')||'/';}catch{return new Response('Bad path',{status:400});}
     if(path==='/owner')return new Response('Not found',{status:404});
     if(path.startsWith('/api/')){
-      if(!['/api/data','/api/research','/api/refresh'].includes(path))return new Response('Not found',{status:404});
+      if(!['/api/data','/api/research','/api/refresh','/api/indices'].includes(path))return new Response('Not found',{status:404});
       if(request.method!=='GET'){
-        if(request.method!=='POST'||path==='/api/data')return new Response('Method not allowed',{status:405});
+        if(request.method!=='POST'||path==='/api/data'||path==='/api/indices')return new Response('Method not allowed',{status:405});
         if(!await canUpdate(request,env.RESEARCH_UPDATE_TOKEN||env.OWNER_PASSWORD))return Response.json({error:'서버 갱신 전용 요청입니다.'},{status:401});
       }
       if(path==='/api/data'&&request.method==='GET')ctx.waitUntil(refreshPublicMarket().catch(()=>console.error('Public market refresh failed')));
